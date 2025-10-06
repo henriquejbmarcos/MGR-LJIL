@@ -1,0 +1,237 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 2000px;
+                 height: 1200px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"size": 10}, "group": "actor", "id": "Developing States", "label": "Developing States", "shape": "ellipse", "size": 20, "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "actor", "id": "Clearing-House Mechanism", "label": "Clearing-House Mechanism", "shape": "ellipse", "size": 20, "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "actor", "id": "Resource Users", "label": "Resource Users", "shape": "ellipse", "size": 20, "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "actor", "id": "Other Contracting Parties to BBNJ", "label": "Other Contracting Parties to BBNJ", "shape": "ellipse", "size": 20, "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "actor", "id": "Clearing-House Mechanism; Developing States", "label": "Clearing-House Mechanism; Developing States", "shape": "ellipse", "size": 20, "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "actor", "id": "Contracting Party to BBNJ", "label": "Contracting Party to BBNJ", "shape": "ellipse", "size": 20, "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "actor", "id": "Access and Benefit Sharing Committee", "label": "Access and Benefit Sharing Committee", "shape": "ellipse", "size": 20, "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "actor", "id": "Scientific and Research Community", "label": "Scientific and Research Community", "shape": "ellipse", "size": 20, "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "action", "id": "Duty: Must ensure MGR-related information is notified to the Clearing-House Mechanism.", "label": "Duty: Must ensure MGR-related information is notified to the Clearing-House Mechanism.", "shape": "box", "size": 20, "title": "Provisions: BBNJ Article 12(1)", "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "action", "id": "Duty: Within six months, must notify the nature and objectives of MGR and DSI collection.", "label": "Duty: Within six months, must notify the nature and objectives of MGR and DSI collection.", "shape": "box", "size": 20, "title": "Provisions: BBNJ Article 12(2)(a)", "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "action", "id": "Duty: Within six months, must notify the subject matter and targeted MGR and their purposes.", "label": "Duty: Within six months, must notify the subject matter and targeted MGR and their purposes.", "shape": "box", "size": 20, "title": "Provisions: BBNJ Article 12(2)(b)", "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "action", "id": "Duty: Within six months, must notify the geographical areas of collection.", "label": "Duty: Within six months, must notify the geographical areas of collection.", "shape": "box", "size": 20, "title": "Provisions: BBNJ Article 12(2)(c)", "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "action", "id": "Duty: Within six months, must notify summary of collection methods and means.", "label": "Duty: Within six months, must notify summary of collection methods and means.", "shape": "box", "size": 20, "title": "Provisions: BBNJ Article 12(2)(d)", "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "action", "id": "Duty: Within six months, must notify contributions to proposed MGR project.", "label": "Duty: Within six months, must notify contributions to proposed MGR project.", "shape": "box", "size": 20, "title": "Provisions: BBNJ Article 12(2)(e)", "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "action", "id": "Duty: Within six months, must notify expected dates of appearance and departure of research vessels and deployment equipment operations.", "label": "Duty: Within six months, must notify expected dates of appearance and departure of research vessels and deployment equipment operations.", "shape": "box", "size": 20, "title": "Provisions: BBNJ Article 12(2)(f)", "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "action", "id": "Duty: Within six months, must notify sponsoring institutions and responsible person(s).", "label": "Duty: Within six months, must notify sponsoring institutions and responsible person(s).", "shape": "box", "size": 20, "title": "Provisions: BBNJ Article 12(2)(g)", "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "action", "id": "Duty: Within six months, must notify opportunities for scientific involvement.", "label": "Duty: Within six months, must notify opportunities for scientific involvement.", "shape": "box", "size": 20, "title": "Provisions: BBNJ Article 12(2)(h)", "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "action", "id": "Duty: Within six months, must notify how States needing technical assistance may participate.", "label": "Duty: Within six months, must notify how States needing technical assistance may participate.", "shape": "box", "size": 20, "title": "Provisions: BBNJ Article 12(2)(i)", "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "action", "id": "Duty: Within six months, must notify data management plan aligned with open and responsible data governance.", "label": "Duty: Within six months, must notify data management plan aligned with open and responsible data governance.", "shape": "box", "size": 20, "title": "Provisions: BBNJ Article 12(2)(j)", "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "action", "id": "Duty: Must assign standardized batch identifiers for notifications.", "label": "Duty: Must assign standardized batch identifiers for notifications.", "shape": "box", "size": 20, "title": "Provisions: BBNJ Article 12(3)", "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "action", "id": "Duty: Must update information upon material change prior to collection.", "label": "Duty: Must update information upon material change prior to collection.", "shape": "box", "size": 20, "title": "Provisions: BBNJ Article 12(4)", "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "action", "id": "Duty: Within one year from the collection in situ of MGRs in ABNJ, must notify the repository or database where digital sequence information on MGRs is or will be deposited.", "label": "Duty: Within one year from the collection in situ of MGRs in ABNJ, must notify the repository or database where digital sequence information on MGRs is or will be deposited.", "shape": "box", "size": 20, "title": "Provisions: BBNJ Article 12(5)(a)", "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "action", "id": "Duty: Within one year from the collection in situ of MGRs in ABNJ, must notify where all MGRs collected in situ are or will be deposited or held.", "label": "Duty: Within one year from the collection in situ of MGRs in ABNJ, must notify where all MGRs collected in situ are or will be deposited or held.", "shape": "box", "size": 20, "title": "Provisions: BBNJ Article 12(5)(b)", "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "action", "id": "Duty: Within one year from the collection in situ of MGRs in ABNJ, must report detailing the geographical area from which MGRs were collected, including information on the latitude, longitude and depth of collection, and the findings from the activity undertaken.", "label": "Duty: Within one year from the collection in situ of MGRs in ABNJ, must report detailing the geographical area from which MGRs were collected, including information on the latitude, longitude and depth of collection, and the findings from the activity undertaken.", "shape": "box", "size": 20, "title": "Provisions: BBNJ Article 12(5)(c)", "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "action", "id": "Duty: Within one year from the collection in situ of MGRs in ABNJ, must notify necessary updates to the data management plan.", "label": "Duty: Within one year from the collection in situ of MGRs in ABNJ, must notify necessary updates to the data management plan.", "shape": "box", "size": 20, "title": "Provisions: BBNJ Article 12(5)(d)", "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "action", "id": "Duty: Must ensure samples in repositories are identifiable as ABNJ origin.", "label": "Duty: Must ensure samples in repositories are identifiable as ABNJ origin.", "shape": "box", "size": 20, "title": "Provisions: BBNJ Article 12(6)", "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "action", "id": "Duty: Must ensure ABNJ origin of MGR/DSI is traceable in repositories and databases under their jurisdiction through a biennial aggregate report", "label": "Duty: Must ensure ABNJ origin of MGR/DSI is traceable in repositories and databases under their jurisdiction through a biennial aggregate report", "shape": "box", "size": 20, "title": "Provisions: BBNJ Article 12(7)", "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "action", "id": "Duty: Must make the aggregate report available", "label": "Duty: Must make the aggregate report available", "shape": "box", "size": 20, "title": "Provisions: BBNJ Article 12(7)", "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "action", "id": "Duty: Must notify results of MGR and DSI utilization (e.g., publications, patent granted, products developed).", "label": "Duty: Must notify results of MGR and DSI utilization (e.g., publications, patent granted, products developed).", "shape": "box", "size": 20, "title": "Provisions: BBNJ Article 12(8)(a)", "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "action", "id": "Duty: Must notify post-collection updates regarding utilized MGR.", "label": "Duty: Must notify post-collection updates regarding utilized MGR.", "shape": "box", "size": 20, "title": "Provisions: BBNJ Article 12(8)(b)", "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "action", "id": "Duty: Must notify where the original MGR sample is held.", "label": "Duty: Must notify where the original MGR sample is held.", "shape": "box", "size": 20, "title": "Provisions: BBNJ Article 12(8)(c)", "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "action", "id": "Duty: Must notify access modalities and data management plan for MGR/DSI.", "label": "Duty: Must notify access modalities and data management plan for MGR/DSI.", "shape": "box", "size": 20, "title": "Provisions: BBNJ Article 12(8)(d)", "widthConstraint": {"maximum": 100}}, {"font": {"size": 10}, "group": "action", "id": "Duty: Must notify information on marketed products from MGR.", "label": "Duty: Must notify information on marketed products from MGR.", "shape": "box", "size": 20, "title": "Provisions: BBNJ Article 12(8)(e)", "widthConstraint": {"maximum": 100}}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Must ensure MGR-related information is notified to the Clearing-House Mechanism."}, {"arrows": "to", "color": "black", "from": "Duty: Must ensure MGR-related information is notified to the Clearing-House Mechanism.", "label": "Towards", "to": "Clearing-House Mechanism"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Within six months, must notify the nature and objectives of MGR and DSI collection."}, {"arrows": "to", "color": "black", "from": "Duty: Within six months, must notify the nature and objectives of MGR and DSI collection.", "label": "Towards", "to": "Clearing-House Mechanism"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Within six months, must notify the subject matter and targeted MGR and their purposes."}, {"arrows": "to", "color": "black", "from": "Duty: Within six months, must notify the subject matter and targeted MGR and their purposes.", "label": "Towards", "to": "Clearing-House Mechanism"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Within six months, must notify the geographical areas of collection."}, {"arrows": "to", "color": "black", "from": "Duty: Within six months, must notify the geographical areas of collection.", "label": "Towards", "to": "Clearing-House Mechanism"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Within six months, must notify summary of collection methods and means."}, {"arrows": "to", "color": "black", "from": "Duty: Within six months, must notify summary of collection methods and means.", "label": "Towards", "to": "Clearing-House Mechanism"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Within six months, must notify contributions to proposed MGR project."}, {"arrows": "to", "color": "black", "from": "Duty: Within six months, must notify contributions to proposed MGR project.", "label": "Towards", "to": "Clearing-House Mechanism"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Within six months, must notify expected dates of appearance and departure of research vessels and deployment equipment operations."}, {"arrows": "to", "color": "black", "from": "Duty: Within six months, must notify expected dates of appearance and departure of research vessels and deployment equipment operations.", "label": "Towards", "to": "Clearing-House Mechanism"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Within six months, must notify expected dates of appearance and departure of research vessels and deployment equipment operations."}, {"arrows": "to", "color": "black", "from": "Duty: Within six months, must notify expected dates of appearance and departure of research vessels and deployment equipment operations.", "label": "Towards", "to": "Scientific and Research Community"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Within six months, must notify sponsoring institutions and responsible person(s)."}, {"arrows": "to", "color": "black", "from": "Duty: Within six months, must notify sponsoring institutions and responsible person(s).", "label": "Towards", "to": "Clearing-House Mechanism"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Within six months, must notify opportunities for scientific involvement."}, {"arrows": "to", "color": "black", "from": "Duty: Within six months, must notify opportunities for scientific involvement.", "label": "Towards", "to": "Other Contracting Parties to BBNJ"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Within six months, must notify opportunities for scientific involvement."}, {"arrows": "to", "color": "black", "from": "Duty: Within six months, must notify opportunities for scientific involvement.", "label": "Towards", "to": "Scientific and Research Community"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Within six months, must notify opportunities for scientific involvement."}, {"arrows": "to", "color": "black", "from": "Duty: Within six months, must notify opportunities for scientific involvement.", "label": "Towards", "to": "Developing States"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Within six months, must notify how States needing technical assistance may participate."}, {"arrows": "to", "color": "black", "from": "Duty: Within six months, must notify how States needing technical assistance may participate.", "label": "Towards", "to": "Clearing-House Mechanism; Developing States"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Within six months, must notify how States needing technical assistance may participate."}, {"arrows": "to", "color": "black", "from": "Duty: Within six months, must notify how States needing technical assistance may participate.", "label": "Towards", "to": "Developing States"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Within six months, must notify data management plan aligned with open and responsible data governance."}, {"arrows": "to", "color": "black", "from": "Duty: Within six months, must notify data management plan aligned with open and responsible data governance.", "label": "Towards", "to": "Clearing-House Mechanism"}, {"arrows": "to", "color": "black", "from": "Clearing-House Mechanism", "label": "Has", "to": "Duty: Must assign standardized batch identifiers for notifications."}, {"arrows": "to", "color": "black", "from": "Duty: Must assign standardized batch identifiers for notifications.", "label": "Towards", "to": "Resource Users"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Must update information upon material change prior to collection."}, {"arrows": "to", "color": "black", "from": "Duty: Must update information upon material change prior to collection.", "label": "Towards", "to": "Clearing-House Mechanism"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Within one year from the collection in situ of MGRs in ABNJ, must notify the repository or database where digital sequence information on MGRs is or will be deposited."}, {"arrows": "to", "color": "black", "from": "Duty: Within one year from the collection in situ of MGRs in ABNJ, must notify the repository or database where digital sequence information on MGRs is or will be deposited.", "label": "Towards", "to": "Clearing-House Mechanism"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Within one year from the collection in situ of MGRs in ABNJ, must notify where all MGRs collected in situ are or will be deposited or held."}, {"arrows": "to", "color": "black", "from": "Duty: Within one year from the collection in situ of MGRs in ABNJ, must notify where all MGRs collected in situ are or will be deposited or held.", "label": "Towards", "to": "Clearing-House Mechanism"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Within one year from the collection in situ of MGRs in ABNJ, must report detailing the geographical area from which MGRs were collected, including information on the latitude, longitude and depth of collection, and the findings from the activity undertaken."}, {"arrows": "to", "color": "black", "from": "Duty: Within one year from the collection in situ of MGRs in ABNJ, must report detailing the geographical area from which MGRs were collected, including information on the latitude, longitude and depth of collection, and the findings from the activity undertaken.", "label": "Towards", "to": "Clearing-House Mechanism"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Within one year from the collection in situ of MGRs in ABNJ, must notify necessary updates to the data management plan."}, {"arrows": "to", "color": "black", "from": "Duty: Within one year from the collection in situ of MGRs in ABNJ, must notify necessary updates to the data management plan.", "label": "Towards", "to": "Clearing-House Mechanism"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Must ensure samples in repositories are identifiable as ABNJ origin."}, {"arrows": "to", "color": "black", "from": "Duty: Must ensure samples in repositories are identifiable as ABNJ origin.", "label": "Towards", "to": "Resource Users"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Must ensure ABNJ origin of MGR/DSI is traceable in repositories and databases under their jurisdiction through a biennial aggregate report"}, {"arrows": "to", "color": "black", "from": "Duty: Must ensure ABNJ origin of MGR/DSI is traceable in repositories and databases under their jurisdiction through a biennial aggregate report", "label": "Towards", "to": "Resource Users"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Must make the aggregate report available"}, {"arrows": "to", "color": "black", "from": "Duty: Must make the aggregate report available", "label": "Towards", "to": "Access and Benefit Sharing Committee"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Must notify results of MGR and DSI utilization (e.g., publications, patent granted, products developed)."}, {"arrows": "to", "color": "black", "from": "Duty: Must notify results of MGR and DSI utilization (e.g., publications, patent granted, products developed).", "label": "Towards", "to": "Clearing-House Mechanism"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Must notify post-collection updates regarding utilized MGR."}, {"arrows": "to", "color": "black", "from": "Duty: Must notify post-collection updates regarding utilized MGR.", "label": "Towards", "to": "Clearing-House Mechanism"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Must notify where the original MGR sample is held."}, {"arrows": "to", "color": "black", "from": "Duty: Must notify where the original MGR sample is held.", "label": "Towards", "to": "Clearing-House Mechanism"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Must notify access modalities and data management plan for MGR/DSI."}, {"arrows": "to", "color": "black", "from": "Duty: Must notify access modalities and data management plan for MGR/DSI.", "label": "Towards", "to": "Clearing-House Mechanism"}, {"arrows": "to", "color": "black", "from": "Contracting Party to BBNJ", "label": "Has", "to": "Duty: Must notify information on marketed products from MGR."}, {"arrows": "to", "color": "black", "from": "Duty: Must notify information on marketed products from MGR.", "label": "Towards", "to": "Clearing-House Mechanism"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    
+<style>
+  /* Custom style for the physics control panel */
+  #mynetwork-popUp {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      top: auto !important;
+      width: auto;
+      height: auto;
+      padding: 5px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      z-index: 500;
+  }
+  #mynetwork-popUp .vis-button {
+      font-size: 10px;
+      padding: 2px 4px;
+  }
+</style>
+<div style="position: absolute; top: 10px; right: 10px; z-index: 1000;">
+  <input type="text" id="searchBox" placeholder="Search..." style="padding: 5px;">
+</div>
+<script type="text/javascript">
+  // Store original colors for all nodes.
+  var originalNodeColors = {};
+  network.body.data.nodes.get().forEach(function(node) {
+      originalNodeColors[node.id] = node.color;
+  });
+
+
+ // Normalize input string similar to Python preprocessing
+  function normalizeString(str) {
+    return str
+      .normalize("NFKC")
+      .replace(/\u00A0/g, " ")       // non-breaking space
+      .replace(/[\u2010-\u2015]/g, "-")  // all kinds of dashes
+      .replace(/[\u2018\u2019]/g, "'")   // single quotes
+      .replace(/[\u201C\u201D]/g, '"')   // double quotes
+      .replace(/\u2026/g, "...")     // ellipsis
+      .replace(/\s+/g, " ")          // normalize whitespace
+      .trim()
+      .toLowerCase();
+  }
+
+
+
+// Live search logic
+  document.getElementById("searchBox").addEventListener("keyup", function() {
+    var searchText = normalizeString(this.value);
+    network.body.data.nodes.get().forEach(function(node) {
+      const label = normalizeString(node.label || "");
+      const title = normalizeString(node.title || "");
+
+      if (searchText === "") {
+        // Reset all node colors
+        network.body.data.nodes.update({id: node.id, color: originalNodeColors[node.id]});
+      } else if (label.includes(searchText) || title.includes(searchText)) {
+        network.body.data.nodes.update({id: node.id, color: "pink"});
+      } else {
+        network.body.data.nodes.update({id: node.id, color: originalNodeColors[node.id]});
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
